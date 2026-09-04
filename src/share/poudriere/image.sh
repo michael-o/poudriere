@@ -250,12 +250,16 @@ install_world_from_pkgbase()
 	       }
 -EOF
 	pkg -o ABI_FILE="${mnt}/usr/lib/crt1.o" -o REPOS_DIR=${WRKDIR}/world/etc/pkg/ -o ASSUME_ALWAYS_YES=yes -r ${WRKDIR:?}/world update ${PKG_QUIET}
-	msg "Installing base packages"
+	if [ -n "${PKG_QUIET}" ]; then
+		msg_n "Installing base packages..."
+	else
+		msg "Installing base packages..."
+	fi
 	while read line; do
 		pkg -o ABI_FILE="${mnt}/usr/lib/crt1.o" -o REPOS_DIR=${WRKDIR}/world/etc/pkg/ -o ASSUME_ALWAYS_YES=yes -r ${WRKDIR:?}/world install -r local ${PKG_QUIET} -y ${line}
 	done < ${PKGBASELIST}
 	rm ${WRKDIR:?}/world/etc/pkg/FreeBSD-base.conf
-	msg "Base packages installed"
+	[ -n "${PKG_QUIET}" ] && echo " done"
 }
 
 install_world()
